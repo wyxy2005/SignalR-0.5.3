@@ -277,6 +277,64 @@ namespace SignalR.Tests
         }
 
         [Fact]
+        public void DynamicHubs()
+        {
+            var host = new MemoryHost();
+            host.MapHubs();
+            host.DependencyResolver.UseDynamicHubs();
+            IHubContext context = host.ConnectionManager.GetHubContext("dynamicHub");
+            var wh = new ManualResetEventSlim(false);
+
+            var connection = new Client.Hubs.HubConnection("http://foo");
+            var proxy = connection.CreateProxy("dynamicHub");
+            connection.Start(host).Wait();
+
+            proxy.On<int>("callback", n =>
+            {
+                Assert.Equal(1, n);
+                wh.Set();
+            });
+
+            context.Clients.callback(1);
+            Assert.True(wh.Wait(TimeSpan.FromSeconds(5)));
+        }
+
+        [Fact]
+        public void SpecificDynamicHubsAllowed()
+        {
+            var host = new MemoryHost();
+            host.MapHubs();
+            host.DependencyResolver.UseDynamicHubs("mehub");
+            IHubContext context = host.ConnectionManager.GetHubContext("mehub");
+            var wh = new ManualResetEventSlim(false);
+
+            var connection = new Client.Hubs.HubConnection("http://foo");
+            var proxy = connection.CreateProxy("mehub");
+            connection.Start(host).Wait();
+
+            proxy.On<int>("callback2", n =>
+            {
+                Assert.Equal(1, n);
+                wh.Set();
+            });
+
+            context.Clients.callback2(1);
+            Assert.True(wh.Wait(TimeSpan.FromSeconds(5)));
+        }
+
+        [Fact]
+        public void DynamicHubsThrowsIfHubsAreUnallowed()
+        {
+            var host = new MemoryHost();
+            host.MapHubs();
+            host.DependencyResolver.UseDynamicHubs("one", "two");
+
+            var connection = new Client.Hubs.HubConnection("http://foo");
+            var proxy = connection.CreateProxy("dynamicHub");
+            Assert.Throws<AggregateException>(() => connection.Start(host).Wait());
+        }
+
+        [Fact]
         public void AddingToMultipleGroups()
         {
             var host = new MemoryHost();

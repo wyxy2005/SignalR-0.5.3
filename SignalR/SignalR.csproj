@@ -57,6 +57,7 @@
     <Compile Include="CommandType.cs" />
     <Compile Include="Hosting\IWebSocket.cs" />
     <Compile Include="Hosting\ResponseExtensions.cs" />
+    <Compile Include="Hubs\DependencyResolverExtensions.cs" />
     <Compile Include="Hubs\HubContext.cs" />
     <Compile Include="Hubs\HubRequest.cs" />
     <Compile Include="Hubs\HubRequestParser.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Hubs\IClientProxy.cs" />
     <Compile Include="Hubs\IHubContext.cs" />
     <Compile Include="Hubs\IHubRequestParser.cs" />
+    <Compile Include="Hubs\Lookup\DynamicHubDescriptorProvider.cs" />
     <Compile Include="Json\IJsonValue.cs" />
     <Compile Include="Json\JTokenValue.cs" />
     <Compile Include="Hubs\StatefulSignalProxy.cs" />
