@@ -297,6 +297,33 @@ namespace SignalR.Tests
 
             context.Clients.callback(1);
             Assert.True(wh.Wait(TimeSpan.FromSeconds(5)));
+
+            connection.Stop();
+        }
+
+        [Fact]
+        public void DynamicHubsAreNotCaseSensitive()
+        {
+            var host = new MemoryHost();
+            host.MapHubs();
+            host.DependencyResolver.UseDynamicHubs("test");
+            IHubContext context = host.ConnectionManager.GetHubContext("Test");
+            var wh = new ManualResetEventSlim(false);
+
+            var connection = new Client.Hubs.HubConnection("http://foo");
+            var proxy = connection.CreateProxy("tEst");
+            connection.Start(host).Wait();
+
+            proxy.On<int>("callback", n =>
+            {
+                Assert.Equal(1, n);
+                wh.Set();
+            });
+
+            context.Clients.callback(1);
+            Assert.True(wh.Wait(TimeSpan.FromSeconds(5)));
+
+            connection.Stop();
         }
 
         [Fact]
@@ -320,6 +347,8 @@ namespace SignalR.Tests
 
             context.Clients.callback2(1);
             Assert.True(wh.Wait(TimeSpan.FromSeconds(5)));
+
+            connection.Stop();
         }
 
         [Fact]
@@ -332,6 +361,8 @@ namespace SignalR.Tests
             var connection = new Client.Hubs.HubConnection("http://foo");
             var proxy = connection.CreateProxy("dynamicHub");
             Assert.Throws<AggregateException>(() => connection.Start(host).Wait());
+
+            connection.Stop();
         }
 
         [Fact]

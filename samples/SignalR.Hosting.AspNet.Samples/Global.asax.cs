@@ -5,6 +5,7 @@ using System.Web.Routing;
 using SignalR.Samples.Hubs.DemoHub;
 using SignalR.Samples.Raw;
 using SignalR.Samples.Streaming;
+using SignalR.Hubs;
 
 namespace SignalR.Hosting.AspNet.Samples
 {
@@ -12,10 +13,13 @@ namespace SignalR.Hosting.AspNet.Samples
     {
         protected void Application_Start(object sender, EventArgs e)
         {
+            GlobalHost.DependencyResolver.UseDynamicHubs("Stream");
+
             ThreadPool.QueueUserWorkItem(_ =>
             {
                 var context = GlobalHost.ConnectionManager.GetConnectionContext<Streaming>();
                 var hubContext = GlobalHost.ConnectionManager.GetHubContext<DemoHub>();
+                var streamContext = GlobalHost.ConnectionManager.GetHubContext("Stream");
 
                 while (true)
                 {
@@ -23,6 +27,7 @@ namespace SignalR.Hosting.AspNet.Samples
                     {
                         context.Connection.Broadcast(DateTime.Now.ToString());
                         hubContext.Clients.fromArbitraryCode(DateTime.Now.ToString());
+                        streamContext.Clients.addData(DateTime.Now.ToString());
                     }
                     catch (Exception ex)
                     {

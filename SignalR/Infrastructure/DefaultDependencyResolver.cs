@@ -88,11 +88,8 @@ namespace SignalR
                 {
                     return null;
                 }
-                if (activators.Count > 1)
-                {
-                    throw new InvalidOperationException(String.Format("Multiple activators for type {0} are registered. Please call GetServices instead.", serviceType.FullName));
-                }
-                return activators[0]();
+
+                return activators[activators.Count - 1]();
             }
             return null;
         }
@@ -119,10 +116,7 @@ namespace SignalR
                 activators = new List<Func<object>>();
                 _resolvers.Add(serviceType, activators);
             }
-            else
-            {
-                activators.Clear();
-            }
+
             activators.Add(activator);
         }
 
@@ -138,6 +132,7 @@ namespace SignalR
             {
                 list.Clear();
             }
+
             foreach (var a in activators)
             {
                 list.Add(a);

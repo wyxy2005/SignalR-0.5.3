@@ -114,6 +114,8 @@
     <Content Include="Hubs\Chat\Chat.js" />
     <Content Include="Hubs\Chat\index.htm" />
     <Content Include="Hubs\DrawingPad\index.htm" />
+    <Content Include="Hubs\HubStream\HubStream.js" />
+    <Content Include="Hubs\HubStream\index.htm" />
     <Content Include="Hubs\MouseTracking\images\wand.png" />
     <Content Include="Hubs\MouseTracking\MouseTracking.css" />
     <Content Include="Hubs\MouseTracking\index.htm" />

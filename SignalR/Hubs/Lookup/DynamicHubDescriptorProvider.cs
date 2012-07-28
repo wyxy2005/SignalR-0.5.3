@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SignalR.Hubs
@@ -12,7 +13,9 @@ namespace SignalR.Hubs
 
         public DynamicHubDescriptorProvider(params string[] allowedHubs)
         {
-            _allowedHubs = allowedHubs.ToDictionary(name => name, name => new HubDescriptor { Name = name });
+            _allowedHubs = allowedHubs.ToDictionary(name => name, 
+                                                    name => new HubDescriptor { Name = name }, 
+                                                    StringComparer.OrdinalIgnoreCase);
         }
 
         public IList<HubDescriptor> GetHubs()
