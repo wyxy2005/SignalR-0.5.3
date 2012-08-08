@@ -156,6 +156,12 @@ namespace SignalR.Tests
                 _counter = (_counter + 1) % _servers.Length;
                 return _servers[index].PostAsync(url, prepareRequest, postData);
             }
+
+
+            public Task<System.IO.Stream> GetWriteStream(string url, Action<IClientRequest> prepareRequest)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private class FarmConnection : PersistentConnection

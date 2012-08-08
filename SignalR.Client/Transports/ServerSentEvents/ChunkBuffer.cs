@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SignalR.Client.Transports.ServerSentEvents
 {
-    public class ChunkBuffer
+    internal class ChunkBuffer
     {
         private int _offset;
         private readonly StringBuilder _buffer;

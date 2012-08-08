@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using SignalR.Client.Http;
 using SignalR.Hosting.Common;
-
 using IClientRequest = SignalR.Client.Http.IRequest;
 using IClientResponse = SignalR.Client.Http.IResponse;
 
@@ -82,6 +82,12 @@ namespace SignalR.Hosting.Memory
         public void Dispose()
         {
             _shutDownToken.Cancel(throwOnFirstException: false);
+        }
+
+
+        public Task<Stream> GetWriteStream(string url, Action<IClientRequest> prepareRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

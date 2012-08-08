@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Reflection;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -74,6 +75,21 @@ namespace SignalR.Hosting.AspNet
         {
             get;
             private set;
+        }
+
+        public Stream InputStream
+        {
+            get
+            {
+                var context = HttpContext.Current;
+                
+                if (context == null)
+                {
+                    return null;
+                }
+
+                return context.Request.GetBufferlessInputStream();
+            }
         }
 
         private void ResolveFormAndQueryString()

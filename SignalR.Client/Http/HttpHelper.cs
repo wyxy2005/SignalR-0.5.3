@@ -98,6 +98,25 @@ namespace SignalR.Client.Http
             }
         }
 
+        public static Task<Stream> GetPostStream(string url, Action<HttpWebRequest> requestPreparer)
+        {
+            HttpWebRequest request = CreateWebRequest(url);
+            request.ReadWriteTimeout = 10000000;
+            request.AllowWriteStreamBuffering = false;
+            request.ServicePoint.Expect100Continue = false;
+            request.SendChunked = true;
+
+            if (requestPreparer != null)
+            {
+                requestPreparer(request);
+            }
+
+            request.Method = "POST";
+            request.ContentType = "text/event-stream";
+            
+            return request.GetHttpRequestStreamAsync();
+        }
+
         private static Task<HttpWebResponse> PostInternal(string url, Action<HttpWebRequest> requestPreparer, IDictionary<string, string> postData)
         {
             HttpWebRequest request = CreateWebRequest(url);

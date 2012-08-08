@@ -106,5 +106,11 @@ namespace SignalR.Hosting.Self
             throw new NotSupportedException();
 #endif
         }
+
+
+        public Stream InputStream
+        {
+            get { return _httpListenerContext.Request.InputStream; }
+        }
     }
 }

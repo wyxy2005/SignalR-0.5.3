@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SignalR.Client.Transports.ServerSentEvents;
 using SignalR.Infrastructure;
 
 namespace SignalR.Transports
@@ -8,6 +9,7 @@ namespace SignalR.Transports
     {
         private IJsonSerializer _jsonSerializer;
         private string _lastMessageId;
+        private EventSourceStreamReader _reader;
 
         public ForeverTransport(HostContext context, IDependencyResolver resolver)
             : this(context,
@@ -83,6 +85,10 @@ namespace SignalR.Transports
             if (Context.Request.Url.LocalPath.EndsWith("/send"))
             {
                 return ProcessSendRequest();
+            }
+            else if (Context.Request.Url.LocalPath.EndsWith("/sending"))
+            {
+                return ProcessSendingRequest();
             }
             else if (IsAbortRequest)
             {
@@ -160,6 +166,50 @@ namespace SignalR.Transports
             }
 
             return TaskAsyncHelper.Empty;
+        }
+
+        private Task ProcessSendingRequest()
+        {
+            if (Context.Request.InputStream == null)
+            {
+                return TaskAsyncHelper.FromError(new InvalidOperationException("Streaming send isn't supported on this server"));
+            }
+
+            var tcs = new TaskCompletionSource<object>();
+
+            if (_reader != null)
+            {
+                _reader.Close();
+                _reader = null;
+            }
+
+            _reader = new EventSourceStreamReader(Context.Request.InputStream);
+
+            _reader.Message = sseEvent =>
+            {
+                OnReceiving(sseEvent.Data);
+
+                if (Received != null)
+                {
+                    Received(sseEvent.Data).Catch();
+                }
+            };
+
+            _reader.Closed = ex =>
+            {
+                if (ex != null)
+                {
+                    tcs.SetException(ex);
+                }
+                else
+                {
+                    tcs.SetResult(null);
+                }
+            };
+
+            _reader.Start();
+
+            return tcs.Task;
         }
 
         private Task ProcessReceiveRequest(ITransportConnection connection, Action postReceive = null)
@@ -253,6 +303,10 @@ namespace SignalR.Transports
 
             taskCompletetionSource.SetResult(null);
             CompleteRequest();
+            if (_reader != null)
+            {
+                _reader.Close();
+            }
             return;
         }
     }

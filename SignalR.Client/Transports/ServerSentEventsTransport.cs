@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using SignalR.Client.Http;
 using SignalR.Client.Infrastructure;
 using SignalR.Client.Transports.ServerSentEvents;
@@ -13,6 +14,7 @@ namespace SignalR.Client.Transports
         private int _initializedCalled;
 
         private const string EventSourceKey = "eventSourceStream";
+        private const string EventSourceUpKey = "eventSourceStream-up";
 
         public ServerSentEventsTransport()
             : this(new DefaultHttpClient())
@@ -35,6 +37,44 @@ namespace SignalR.Client.Transports
         /// The time to wait after a connection drops to try reconnecting.
         /// </summary>
         public TimeSpan ReconnectDelay { get; set; }
+
+        public override Task<T> Send<T>(IConnection connection, string data)
+        {
+            string url = connection.Url + "sending";
+            string customQueryString = GetCustomQueryString(connection);
+
+            url += String.Format(_sendQueryString, _transport, connection.ConnectionId, customQueryString);
+
+            Task<StreamWriter> streamReady;
+            lock (connection.Items)
+            {
+                if (!connection.TryGetValue<Task<StreamWriter>>(EventSourceUpKey, out streamReady))
+                {
+                    streamReady = _httpClient.GetWriteStream(url, connection.PrepareRequest).Then(stream => new StreamWriter(stream));
+                    connection.Items.Add(EventSourceUpKey, streamReady);
+                }
+            }
+
+            if (streamReady.IsCompleted)
+            {
+                WriteFrame(streamReady.Result, data);
+            }
+            else
+            {
+                streamReady.Then(writer => WriteFrame(writer, data));
+            }
+
+            return TaskAsyncHelper.FromResult<T>(default(T));
+        }
+
+        private static void WriteFrame(StreamWriter streamWriter, string data)
+        {
+            streamWriter.Write("data: " + data);
+            streamWriter.WriteLine();
+            streamWriter.WriteLine();
+            streamWriter.Flush();
+            streamWriter.Close();
+        }
 
         protected override void OnStart(IConnection connection, string data, Action initializeCallback, Action<Exception> errorCallback)
         {
@@ -194,6 +234,13 @@ namespace SignalR.Client.Transports
             if (eventSourceStream != null)
             {
                 eventSourceStream.Close();
+            }
+
+            var writerReady = connection.GetValue<Task<StreamWriter>>(EventSourceUpKey);
+            if (writerReady != null)
+            {
+                writerReady.Wait();
+                writerReady.Result.Close();
             }
 
             base.OnBeforeAbort(connection);

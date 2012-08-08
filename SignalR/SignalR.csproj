@@ -45,6 +45,21 @@
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\SignalR.Client\Infrastructure\StreamExtensions.cs">
+      <Link>Infrastructure\StreamExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\SignalR.Client\Transports\ServerSentEvents\ChunkBuffer.cs">
+      <Link>Transports\ForeverTransport\ChunkBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\SignalR.Client\Transports\ServerSentEvents\EventSourceStreamReader.cs">
+      <Link>Transports\ForeverTransport\EventSourceStreamReader.cs</Link>
+    </Compile>
+    <Compile Include="..\SignalR.Client\Transports\ServerSentEvents\EventType.cs">
+      <Link>Transports\ForeverTransport\EventType.cs</Link>
+    </Compile>
+    <Compile Include="..\SignalR.Client\Transports\ServerSentEvents\SseEvent.cs">
+      <Link>Transports\ForeverTransport\SseEvent.cs</Link>
+    </Compile>
     <Compile Include="Configuration\DefaultConfigurationManager.cs" />
     <Compile Include="ConnectionManager.cs" />
     <Compile Include="Hosting\HostConstants.cs" />

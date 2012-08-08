@@ -101,5 +101,11 @@ namespace SignalR.Hosting.Owin
         {
             throw new NotSupportedException();
         }
+
+
+        public System.IO.Stream InputStream
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

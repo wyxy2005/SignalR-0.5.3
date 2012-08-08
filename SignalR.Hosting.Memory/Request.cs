@@ -114,5 +114,11 @@ namespace SignalR.Hosting.Memory
             // TODO: Add support
             throw new NotSupportedException();
         }
+
+
+        public System.IO.Stream InputStream
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

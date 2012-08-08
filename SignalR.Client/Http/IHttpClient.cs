@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SignalR.Client.Http
@@ -25,5 +26,7 @@ namespace SignalR.Client.Http
         /// <param name="postData">form url encoded data.</param>
         /// <returns>A <see cref="Task{IResponse}"/>.</returns>
         Task<IResponse> PostAsync(string url, Action<IRequest> prepareRequest, Dictionary<string, string> postData);
+
+        Task<Stream> GetWriteStream(string url, Action<IRequest> prepareRequest);
     }
 }

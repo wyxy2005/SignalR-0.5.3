@@ -14,7 +14,7 @@ namespace SignalR.Client.Transports
     public abstract class HttpBasedTransport : IClientTransport
     {
         // The send query string
-        private const string _sendQueryString = "?transport={0}&connectionId={1}{2}";
+        protected const string _sendQueryString = "?transport={0}&connectionId={1}{2}";
 
         // The transport name
         protected readonly string _transport;
@@ -67,7 +67,7 @@ namespace SignalR.Client.Transports
 
         protected abstract void OnStart(IConnection connection, string data, Action initializeCallback, Action<Exception> errorCallback);
 
-        public Task<T> Send<T>(IConnection connection, string data)
+        public virtual Task<T> Send<T>(IConnection connection, string data)
         {
             string url = connection.Url + "send";
             string customQueryString = GetCustomQueryString(connection);
@@ -260,7 +260,7 @@ namespace SignalR.Client.Transports
             }
         }
 
-        private static string GetCustomQueryString(IConnection connection)
+        protected static string GetCustomQueryString(IConnection connection)
         {
             return String.IsNullOrEmpty(connection.QueryString)
                             ? ""

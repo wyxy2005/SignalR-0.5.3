@@ -11,7 +11,7 @@ namespace SignalR.Client.Transports.ServerSentEvents
     /// Event source implementation for .NET. This isn't to the spec but it's enough to support SignalR's
     /// server.
     /// </summary>
-    public class EventSourceStreamReader
+    internal class EventSourceStreamReader
     {
         private readonly Stream _stream;
         private readonly ChunkBuffer _buffer;

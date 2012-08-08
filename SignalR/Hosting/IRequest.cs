@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Security.Principal;
 using System.Threading.Tasks;
 
@@ -34,6 +35,8 @@ namespace SignalR
         /// Gets the form for this request.
         /// </summary>
         NameValueCollection Form { get; }
+
+        Stream InputStream { get; }
 
         /// <summary>
         /// Gets the cookies for this request.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SignalR.Client.Http
@@ -42,6 +43,17 @@ namespace SignalR.Client.Http
                 prepareRequest(req);
             },
             postData).Then(response => (IResponse)new HttpWebResponseWrapper(req, response));
+        }
+
+
+        public Task<Stream> GetWriteStream(string url, Action<IRequest> prepareRequest)
+        {
+            IRequest req = null;
+            return HttpHelper.GetPostStream(url, request =>
+            {
+                req = new HttpWebRequestWrapper(request);
+                prepareRequest(req);
+            });
         }
     }
 }

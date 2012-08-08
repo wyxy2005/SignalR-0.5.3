@@ -16,6 +16,20 @@ namespace SignalR.Client
             return default(T);
         }
 
+        public static bool TryGetValue<T>(this IConnection connection, string key, out T value)
+        {
+            value = default(T);
+
+            object rawValue;
+            if (connection.Items.TryGetValue(key, out rawValue))
+            {
+                value = (T)rawValue;
+                return true;
+            }
+
+            return false;
+        }
+
 #if !WINDOWS_PHONE && !SILVERLIGHT && !NET35
         public static IObservable<string> AsObservable(this Connection connection)
         {
