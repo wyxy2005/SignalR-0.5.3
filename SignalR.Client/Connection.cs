@@ -209,8 +209,11 @@ namespace SignalR.Client
 
             _transport = transport;
 
+            // Store the task so we're not returning a faulted task (if it fails) once it is sent
+            var negotiate = Negotiate(transport);
+
             // Once the negotation has finished we need to check the keep alive
-            return Negotiate(transport).ContinueWith(task =>
+            negotiate.ContinueWith(task =>
             {
                 // We've now determined if the client can support the keep alive so we need to monitor it if it does
                 if (_transport.SupportsKeepAlive)
@@ -218,6 +221,8 @@ namespace SignalR.Client
                     _transport.MonitorKeepAlive(this);
                 }
             });
+
+            return negotiate;
         }
 
         protected virtual string OnSending()
