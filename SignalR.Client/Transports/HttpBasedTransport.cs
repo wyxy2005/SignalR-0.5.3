@@ -206,10 +206,15 @@ namespace SignalR.Client.Transports
 
         }
 
-        protected static void ProcessResponse(IConnection connection, string response, out bool timedOut, out bool disconnected)
+        protected void ProcessResponse(IConnection connection, string response, out bool timedOut, out bool disconnected)
         {
             timedOut = false;
             disconnected = false;
+
+            if (SupportsKeepAlive)
+            {
+                UpdateKeepAlive();
+            }
 
             if (String.IsNullOrEmpty(response))
             {

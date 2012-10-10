@@ -33,6 +33,7 @@ namespace SignalR.Client.Tests
             {
                 var connection = new Connection("http://test");
                 var transport = new Mock<IClientTransport>();
+                transport.Object.SupportsKeepAlive = false;
                 transport.Setup(m => m.Negotiate(connection))
                          .Returns(TaskAsyncHelper.FromError<NegotiationResponse>(new InvalidOperationException("Something failed.")));
 

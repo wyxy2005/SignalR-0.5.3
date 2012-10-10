@@ -115,7 +115,16 @@ namespace SignalR.Client.Transports
         {
             get
             {
-                return _transport.SupportsKeepAlive;
+                // If we error on start then we'll attempt to stop the connection.  On stop we check if the transport
+                // Supports Keep Alive.  In the case of AutoTransport it will not have resolved its _transport yet.
+                if (_transport != null)
+                {
+                    return _transport.SupportsKeepAlive;
+                }
+                else
+                {
+                    return false;
+                }
             }
             set
             {

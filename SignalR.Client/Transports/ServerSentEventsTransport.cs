@@ -138,8 +138,7 @@ namespace SignalR.Client.Transports
 
                             bool timedOut;
                             bool disconnected;
-
-                            UpdateKeepAlive();
+                            
                             ProcessResponse(connection, sseEvent.Data, out timedOut, out disconnected);
 
                             if (disconnected)

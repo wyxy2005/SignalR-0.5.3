@@ -16,6 +16,7 @@ namespace SignalR.Client.Transports
         public KeepAliveData()
         {
             TimeoutCount = 2;
+            // Warn at 2/3 of the timeout
             TimeoutWarningThreshold = .66;
         }
 
