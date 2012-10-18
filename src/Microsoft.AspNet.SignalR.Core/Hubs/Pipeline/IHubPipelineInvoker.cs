@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 namespace Microsoft.AspNet.SignalR.Hubs
 {
     /// <summary>
-    /// 
+    /// Implementations of this interface are responsible for executing operation required to complete various stages
+    /// hub processing such as connecting, reconnecting, disconnecting, invoking server-side hub methods, invoking
+    /// client-side hub methods, authorizing hub clients and rejoining hub groups.
     /// </summary>
     public interface IHubPipelineInvoker
     {

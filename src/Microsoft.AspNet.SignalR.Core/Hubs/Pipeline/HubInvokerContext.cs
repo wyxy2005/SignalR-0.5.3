@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public class HubInvokerContext : IHubIncomingInvokerContext
+    internal class HubInvokerContext : IHubIncomingInvokerContext
     {
         public HubInvokerContext(IHub hub, TrackingDictionary state, MethodDescriptor methodDescriptor, object[] args)
         {
