@@ -76,8 +76,11 @@ namespace Microsoft.AspNet.SignalR.Client.Transports
 
             _httpClient.PostAsync(url, PrepareRequest(connection)).ContinueWith(task =>
             {
-                // Clear the pending request
-                connection.Items.Remove(HttpRequestKey);
+                lock (connection.Items)
+                {
+                    // Clear the pending request
+                    connection.Items.Remove(HttpRequestKey);
+                }
 
                 bool shouldRaiseReconnect = false;
                 bool disconnectedReceived = false;

@@ -9,10 +9,13 @@ namespace Microsoft.AspNet.SignalR.Client
     {
         public static T GetValue<T>(this IConnection connection, string key)
         {
-            object value;
-            if (connection.Items.TryGetValue(key, out value))
+            lock (connection.Items)
             {
-                return (T)value;
+                object value;
+                if (connection.Items.TryGetValue(key, out value))
+                {
+                    return (T)value;
+                }
             }
 
             return default(T);

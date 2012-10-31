@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.md in the project root for license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -95,7 +94,7 @@ namespace Microsoft.AspNet.SignalR.Client
             Url = url;
             QueryString = queryString;
             Groups = Enumerable.Empty<string>();
-            Items = new ConcurrentDictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            Items = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
             State = ConnectionState.Disconnected;
         }
 

@@ -106,7 +106,10 @@ namespace Microsoft.AspNet.SignalR.Client.Transports
                     var eventSource = new EventSourceStreamReader(stream);
                     bool retry = true;
 
-                    connection.Items[EventSourceKey] = eventSource;
+                    lock (connection.Items)
+                    {
+                        connection.Items[EventSourceKey] = eventSource;
+                    }
 
                     eventSource.Opened = () =>
                     {
